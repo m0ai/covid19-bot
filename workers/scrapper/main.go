@@ -4,7 +4,10 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"
+	"log"
+	"net/http"
 	"os"
+	"time"
 )
 
 type Item []struct {
@@ -24,18 +27,67 @@ type Response struct {
 	Items []Item `xml:"body>items>item"`
 }
 
+
 // Scrapping a Covid-19 Information
 // https://www.thepolyglotdeveloper.com/2017/03/parse-xml-data-in-a-golang-application/
 func Scrape(xmlFilePath string) {
-	xmlFp, err := os.Open(xmlFilePath)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Sprintln("Successfully Opened a ", xmlFilePath)
-	defer xmlFp.Close()
+	t := time.Now()
+	getCovidDataFromAPI(t, t)
+}
 
+func requestTo(baseUrl string, params map[string]string) ([]byte, error) {
+	i := 0
+	for k, v := range params {
+		if i == 0 {
+			baseUrl = fmt.Sprint(baseUrl, "?")
+		} else {
+			baseUrl = fmt.Sprint(baseUrl, "&")
+		}
+
+		baseUrl = fmt.Sprint(baseUrl, k, "=", v)
+		i++
+	}
+	res, err := http.Get(baseUrl)
+
+	fmt.Println("Request to " + baseUrl)
+	if err != nil {
+		log.Fatalln("GET Request Failed GET (" + baseUrl + ")")
+	}
+	if res.StatusCode != 200 {
+		log.Fatalln("Request Failed with status: ", res.StatusCode)
+	}
+
+	resBody, readErr := ioutil.ReadAll(res.Body)
+	defer res.Body.Close()
+	if readErr != nil {
+		log.Fatalln("Response data Error")
+	}
+	return resBody, nil
+}
+
+// curl --include --request GET '
+//http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?
+// ServiceKey=${}
+// pageNo=1
+// numOfRows=10
+// startCreateDt=20200310
+// endCreateDt=20200315
+func getCovidDataFromAPI(startDate, endDate time.Time) {
+	var baseUrl string = "http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson"
+	params := map[string]string{
+		"ServiceKey" 	: os.Getenv("OPEN_API_KEY"),
+		"startCreateDt" : startDate.Format("20060102"),
+		"endCreatDt" 	: endDate.Format("20060102"),
+		"pageNo"	    : "1",
+		"numOfRows"		: "10",
+	}
+
+	xmlData, _ := requestTo(baseUrl, params)
+	_ = extractData(xmlData)
+}
+
+func extractData (data []byte) []Item {
 	var res Response
-	data, err := ioutil.ReadAll(xmlFp)
 	xmlReadErr := xml.Unmarshal(data, &res)
 	if xmlReadErr != nil {
 		panic(xmlReadErr)
@@ -44,4 +96,6 @@ func Scrape(xmlFilePath string) {
 	for _, item := range res.Items {
 		fmt.Println(item)
 	}
+	return res.Items
 }
+
