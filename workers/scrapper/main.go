@@ -11,7 +11,7 @@ import (
 )
 
 type Item []struct {
-	XMLName   xml.Name `xml:"item"`
+	XMLName   xml.Name `xml:"item" json:"Item" db:""`
 	Seq       int `xml:"seq"`
 	DecideCnt int `xml:"decideCnt"`
 	DeathCnt  int `xml:"deathCnt"`
@@ -75,11 +75,11 @@ func requestTo(baseUrl string, params map[string]string) ([]byte, error) {
 func getCovidDataFromAPI(startDate, endDate time.Time) {
 	var baseUrl string = "http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson"
 	params := map[string]string{
-		"ServiceKey" 	: os.Getenv("OPEN_API_KEY"),
-		"startCreateDt" : startDate.Format("20060102"),
-		"endCreatDt" 	: endDate.Format("20060102"),
-		"pageNo"	    : "1",
-		"numOfRows"		: "10",
+		"ServiceKey":    os.Getenv("OPEN_API_KEY"),
+		"startCreateDt": startDate.Format("20060102"),
+		"endCreatDt":    endDate.Format("20060102"),
+		"pageNo":        "1",
+		"numOfRows":     "10",
 	}
 
 	xmlData, _ := requestTo(baseUrl, params)

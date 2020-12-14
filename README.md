@@ -1,5 +1,5 @@
 - Worker 
-	- [ ] Scraping a Covid 19 Information from Korean Open API
+	- [X] Scraping a Covid 19 Information from Korean Open API
 	- [ ] Save a Data to Database 
 	    - Daily number of confirmed case
 	    - Update Datetime
@@ -20,4 +20,10 @@ B. 슬랙봇으로 조회
 
 C. 슬랙봇 시각화
 1. 코로나 지표 그림으로 슬랙으로 보내기
+```
+
+## How to Start 
+
+```bash
+reflex -r '\.go' -s -- sh -c "go run main.go" 
 ```
