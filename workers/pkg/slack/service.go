@@ -1,4 +1,4 @@
-package slackUtil
+package slack
 
 import (
 	"bytes"
@@ -9,20 +9,20 @@ import (
 	"net/http"
 )
 
-type SlackMessageAttachmentsFormat struct {
+type MessageAttachmentsFormat struct {
 	Color string `json:"color"`
 	Pretext string `json:"prefix"`
 	Text string `json:"text"`
 }
 
-type SlackMessageBody struct {
-	Channel  string                             `json:"channel"`
-	Text 	 string                             `json:"text"`
-	Attachments []SlackMessageAttachmentsFormat `json:"attachments"`
+type MessageBody struct {
+	Channel  string                        `json:"channel"`
+	Text 	 string                        `json:"text"`
+	Attachments []MessageAttachmentsFormat `json:"attachments"`
 }
 
-func SendSlackMessage(webhookUrl, channel, message string, attachments []SlackMessageAttachmentsFormat) error {
-	messageBody := SlackMessageBody{
+func SendSlackMessage(webhookUrl, channel, message string, attachments []MessageAttachmentsFormat) error {
+	messageBody := MessageBody{
 		Channel: channel,
 		Text:    message,
 		Attachments: attachments,

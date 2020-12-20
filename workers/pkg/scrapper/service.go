@@ -6,46 +6,22 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"scrapper/internal/entity"
 	"time"
 )
 
-type Item struct {
-	XMLName   xml.Name `xml:"item" json:"Item" db:""`
-	Seq       int `xml:"seq"`
-	DecideCnt int `xml:"decideCnt"` // 누적 확진자 수
-	DeathCnt  int `xml:"deathCnt"` // 사망자 수
-	CareCnt   int `xml:"careCnt"` // 치료중 환자 수
-	ClearCnt  int `xml:"clearCnt"` // 격리 해제 수
-	StateDt   string `xml:"stateDt"`
-	StateTime string `xml:"stateTime"`
-	CreateDt  string `xml:"createDt"`
-
-	TodayDecideCnt int
-}
-
 type Response struct {
-	XMLName xml.Name `xml:"response"`
-	Items []Item `xml:"body>items>item"`
+	XMLName xml.Name 				 `xml:"response"`
+	Items []entity.Covid19InfoEntity `xml:"body>items>item"`
 }
 
 // Scrapping a Covid-19 Information
 // https://www.thepolyglotdeveloper.com/2017/03/parse-xml-data-in-a-golang-application/
-func Scrape(openAPIKey string) Item {
+func Scrape(openAPIKey string) entity.Covid19InfoEntity{
 	startDt := time.Now().AddDate(0,0, -1)
 	endDt := time.Now()
 	item := getCovidDataFromAPI(openAPIKey, startDt, endDt)
-	// item := makeCovid19MockStruct()
 	return item
-}
-
-func makeCovid19MockStruct() *Item {
-	item := Item{
-		Seq:       1,
-		CareCnt:   3,
-		DeathCnt:  2,
-		DecideCnt: 2,
-	}
-	return &item
 }
 
 func requestTo(baseUrl string, params map[string]string) ([]byte, error) {
@@ -85,7 +61,7 @@ func requestTo(baseUrl string, params map[string]string) ([]byte, error) {
 // numOfRows=10
 // startCreateDt=20200310
 // endCreateDt=20200315
-func getCovidDataFromAPI(openAPIKey string, startDate, endDate time.Time) (extractedCovid19Data Item){
+func getCovidDataFromAPI(openAPIKey string, startDate, endDate time.Time) (extractedCovid19Data entity.Covid19InfoEntity){
 	var baseUrl string = "http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson"
 	params := map[string]string{
 		"ServiceKey":    openAPIKey,
@@ -99,7 +75,7 @@ func getCovidDataFromAPI(openAPIKey string, startDate, endDate time.Time) (extra
 	return
 }
 
-func extractData (data []byte) []Item {
+func extractData (data []byte) []entity.Covid19InfoEntity {
 	var res Response
 	xmlReadErr := xml.Unmarshal(data, &res)
 	if xmlReadErr != nil {
@@ -112,7 +88,7 @@ func extractData (data []byte) []Item {
 	return res.Items
 }
 
-func extractFirstData (data []byte) Item {
+func extractFirstData (data []byte) entity.Covid19InfoEntity {
 	return extractData(data)[0]
 }
 
