@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -31,10 +30,10 @@ type Response struct {
 
 // Scrapping a Covid-19 Information
 // https://www.thepolyglotdeveloper.com/2017/03/parse-xml-data-in-a-golang-application/
-func Scrape(xmlFilePath string) Item {
+func Scrape(openAPIKey string) Item {
 	startDt := time.Now().AddDate(0,0, -1)
 	endDt := time.Now()
-	item := getCovidDataFromAPI(startDt, endDt)
+	item := getCovidDataFromAPI(openAPIKey, startDt, endDt)
 	// item := makeCovid19MockStruct()
 	return item
 }
@@ -86,10 +85,10 @@ func requestTo(baseUrl string, params map[string]string) ([]byte, error) {
 // numOfRows=10
 // startCreateDt=20200310
 // endCreateDt=20200315
-func getCovidDataFromAPI(startDate, endDate time.Time) (extractedCovid19Data Item){
+func getCovidDataFromAPI(openAPIKey string, startDate, endDate time.Time) (extractedCovid19Data Item){
 	var baseUrl string = "http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson"
 	params := map[string]string{
-		"ServiceKey":    os.Getenv("OPEN_API_KEY"),
+		"ServiceKey":    openAPIKey,
 		"startCreateDt": startDate.Format("20060102"),
 		"endCreatDt":    endDate.Format("20060102"),
 		"pageNo":        "1",

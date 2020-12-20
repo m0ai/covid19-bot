@@ -12,15 +12,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func getEnvVariableFromFile(key, envFile string) string {
-	err := godotenv.Load(envFile)
-	if err != nil {
-		log.Fatalf("Error Loading .env file")
-	}
-
-	return os.Getenv(key)
-}
-
 type slackMessageAttachmentsFormat struct {
 	Color string `json:"color"`
 	Pretext string `json:"prefix"`
@@ -34,7 +25,12 @@ type slackMessageBody struct {
 }
 
 // Configure a init settings as env variable and other for launch worker
-func initConfig() error {
+func initConfig() (err error) {
+	err = godotenv.Load()
+	if err != nil {
+		log.Fatal("Error while loading .env file")
+	}
+
 	return nil
 }
 
@@ -75,13 +71,16 @@ func buildMessage(covidInfo scrapper.Item) (msg slackMessageAttachmentsFormat) {
 }
 
 func main() {
-	_ = initConfig()
-	_ = getEnvVariableFromFile("OPEN_API_KEY", "../.env")
+	err := initConfig()
+	if err != nil {
+		log.Fatalln("Error while initializing config")
+	}
 
 	fmt.Println("Start")
-	todayCovidInfo := scrapper.Scrape("dump.xml")
+
+	todayCovidInfo := scrapper.Scrape(os.Getenv("OPEN_API_KEY"))
 	builtMessage := buildMessage(todayCovidInfo)
-	slackWebhookUrl := getEnvVariableFromFile("SLACK_WEBHOOK_URL","../.env")
+	slackWebhookUrl := os.Getenv("SLACK_WEBHOOK_URL")
 	_ = sendSlackMessage(slackWebhookUrl,"bot-test", "오늘의 코로나 알림 :mask:", []slackMessageAttachmentsFormat{builtMessage})
 
 	fmt.Println("End")
