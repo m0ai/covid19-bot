@@ -10,7 +10,7 @@ import (
 	"os"
 	"scrapper/internal/entity"
 	scrape "scrapper/pkg/scrapper"
-	slackUtil "scrapper/pkg/slack"
+	"time"
 )
 
 // Configure a init settings as env variable and other for launch worker
@@ -20,15 +20,6 @@ func initConfig() error {
 		log.Fatal("Error while loading .env file")
 	}
 	return nil
-}
-
-//Building Message for send to slack
-func buildMessage(covidInfo []entity.Covid19InfoEntity) (msg slackUtil.MessageAttachmentsFormat) {
-	msg = slackUtil.MessageAttachmentsFormat{
-		Color:   "#36a64f",
-		Text:    fmt.Sprint("오늘까지의 누적 확진자 수는 ", covidInfo[0].DecideCnt, "명 입니다. :sob:"),
-	}
-	return
 }
 
 func dbInitConfig() *gorm.DB {
@@ -56,15 +47,13 @@ func main() {
 	_ = initConfig()
 	db := dbInitConfig()
 
-	// startDt := time.Now().AddDate(0,0, -1) // yesterday
-	// endDt := time.Now()
-	// covidInfoArr := scrape.Scrape(os.Getenv("OPEN_API_KEY"), startDt, endDt)
-	covid19InfoArr := scrape.MakeMockCovid19Data()
-
-	// db.Create(&covid19InfoArr)
-	//AlarmToSlack()
+	startDt := time.Now().AddDate(0,0, -1) // yesterday
+	endDt := time.Now()
+	covid19InfoArr := scrape.Scrape(os.Getenv("OPEN_API_KEY"), startDt, endDt)
+	// covid19InfoArr := scrape.MakeMockCovid19Data()
 
 	upsertToDB(db, covid19InfoArr)
+	//AlarmToSlack()
 	fmt.Println("End")
 }
 
@@ -78,5 +67,14 @@ func AlarmToSlack() {
 	builtMessage := buildMessage(todayCovidInfo)
 	slackWebhookUrl := os.Getenv("SLACK_WEBHOOK_URL")
 	_ = slackUtil.SendSlackMessage(slackWebhookUrl,"bot-test", "오늘의 코로나 알림 :mask:", []slackUtil.MessageAttachmentsFormat{builtMessage})
+}
+
+//Building Message for send to slack
+func buildMessage(covidInfo []entity.Covid19InfoEntity) (msg slackUtil.MessageAttachmentsFormat) {
+	msg = slackUtil.MessageAttachmentsFormat{
+		Color:   "#36a64f",
+		Text:    fmt.Sprint("오늘까지의 누적 확진자 수는 ", covidInfo[0].DecideCnt, "명 입니다. :sob:"),
+	}
+	return
 }
  */
