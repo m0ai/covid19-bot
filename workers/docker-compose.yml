@@ -3,10 +3,23 @@ version: "3.9"
 services:
   slackbot:
     build: .
-    command: reflex -r '\.go' -s -- sh -c "go run ./main.go"
+    command: go run /build/main.go
+    working_dir: /build
+    volumes:
+      - ./:/build
+    links:
+      - postgres
 
-  db:
+  postgres:
     image: postgres
     restart: always
     env_file:
       - .env
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+volumes:
+  db-data:
+    driver: local
+
