@@ -91,10 +91,12 @@ func extractFirstData (data []byte) entity.Covid19InfoEntity {
 	return extractData(data)[0]
 }
 
-func MakeMockCovid19Data() entity.Covid19InfoEntity {
+func MakeMockCovid19Data() []entity.Covid19InfoEntity {
 	data := entity.Covid19InfoEntity {
+		Seq: 33,
 		DecideCnt: 1,
 		DeathCnt: 1,
 	}
-	return data
+
+	return []entity.Covid19InfoEntity{data}
 }
