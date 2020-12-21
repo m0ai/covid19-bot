@@ -9,7 +9,7 @@ import (
 type Covid19InfoEntity struct {
 	gorm.Model
 	XMLName   xml.Name `xml:"item" json:"Item" gorm:"-"`
-	Seq       int `xml:"seq" gorm:"index"`
+	Seq       int `xml:"seq" gorm:"primaryKey; uniqueIndex; not null"`
 	DecideCnt int `xml:"decideCnt"` // 누적 확진자 수
 	DeathCnt  int `xml:"deathCnt"` // 사망자 수
 	CareCnt   int `xml:"careCnt"` // 치료중 환자 수
@@ -23,3 +23,6 @@ type Covid19InfoEntity struct {
 	TodayDecideCnt int
 }
 
+func (entity Covid19InfoEntity) TableName() string {
+	return "covid19info"
+}
