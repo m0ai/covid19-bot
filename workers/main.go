@@ -3,14 +3,14 @@ package main
 import (
 	"fmt"
 	"github.com/joho/godotenv"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"gorm.io/driver/sqlite"
+	"gorm.io/gorm/clause"
 	"log"
 	"os"
 	"scrapper/internal/entity"
 	scrape "scrapper/pkg/scrapper"
 	slackUtil "scrapper/pkg/slack"
-	"time"
 )
 
 // Configure a init settings as env variable and other for launch worker
@@ -32,13 +32,22 @@ func buildMessage(covidInfo []entity.Covid19InfoEntity) (msg slackUtil.MessageAt
 }
 
 func dbInitConfig() *gorm.DB {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	dsn := fmt.Sprint("" +
+		"host=postgres", " ",
+		"dbname=", os.Getenv("POSTGRES_DB"), " ",
+		"user=", os.Getenv("POSTGRES_USER"), " ",
+		"password=", os.Getenv("POSTGRES_PASSWORD"), " ",
+		"port=5432 sslmode=disable TimeZone=Asia/Seoul connect_timeout=15")
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalln("failed to connect database")
 	}
 
-	// Migrate the schema
-	_ = db.AutoMigrate(&entity.Covid19InfoEntity{})
+	err = db.AutoMigrate(&entity.Covid19InfoEntity{})
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	return db
 }
 
@@ -47,17 +56,20 @@ func main() {
 	_ = initConfig()
 	db := dbInitConfig()
 
-	var covidInfoArr []entity.Covid19InfoEntity
-	startDt := time.Now().AddDate(0,0, -1) // yesterday
-	endDt := time.Now()
-	covidInfoArr = scrape.Scrape(os.Getenv("OPEN_API_KEY"), startDt, endDt)
-	//todayCovidInfo := scrape.MakeMockCovidInfo()
+	// startDt := time.Now().AddDate(0,0, -1) // yesterday
+	// endDt := time.Now()
+	// covidInfoArr := scrape.Scrape(os.Getenv("OPEN_API_KEY"), startDt, endDt)
+	covid19InfoArr := scrape.MakeMockCovid19Data()
 
-	db.Create(&covidInfoArr)
-
-	fmt.Println(covidInfoArr)
-	fmt.Println("End")
+	// db.Create(&covid19InfoArr)
 	//AlarmToSlack()
+
+	upsertToDB(db, covid19InfoArr)
+	fmt.Println("End")
+}
+
+func upsertToDB(db *gorm.DB, covid19infoArr []entity.Covid19InfoEntity) {
+	db.Clauses(clause.OnConflict{DoNothing: true}).Create(&covid19infoArr)
 }
 
 /*
