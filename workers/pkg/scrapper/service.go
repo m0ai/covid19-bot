@@ -15,14 +15,14 @@ type Response struct {
 	Items []entity.Covid19InfoEntity `xml:"body>items>item"`
 }
 
-// Scrapping a Covid-19 Information
+// Scrapping Covid-19 Information from OPEN API
 // https://www.thepolyglotdeveloper.com/2017/03/parse-xml-data-in-a-golang-application/
-func Scrape(openAPIKey string) entity.Covid19InfoEntity{
-	startDt := time.Now().AddDate(0,0, -1)
-	endDt := time.Now()
-	item := getCovidDataFromAPI(openAPIKey, startDt, endDt)
-	return item
+func Scrape(openAPIKey string, startDt, endDt time.Time) []entity.Covid19InfoEntity {
+	rawData := getCovidDataFromAPI(openAPIKey, startDt, endDt)
+	extractedCovid19Data := extractData(rawData)
+	return extractedCovid19Data
 }
+
 
 func requestTo(baseUrl string, params map[string]string) ([]byte, error) {
 	i := 0
@@ -61,7 +61,7 @@ func requestTo(baseUrl string, params map[string]string) ([]byte, error) {
 // numOfRows=10
 // startCreateDt=20200310
 // endCreateDt=20200315
-func getCovidDataFromAPI(openAPIKey string, startDate, endDate time.Time) (extractedCovid19Data entity.Covid19InfoEntity){
+func getCovidDataFromAPI(openAPIKey string, startDate, endDate time.Time) []byte {
 	var baseUrl string = "http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson"
 	params := map[string]string{
 		"ServiceKey":    openAPIKey,
@@ -71,8 +71,7 @@ func getCovidDataFromAPI(openAPIKey string, startDate, endDate time.Time) (extra
 		"numOfRows":     "10",
 	}
 	xmlData, _ := requestTo(baseUrl, params)
-	extractedCovid19Data = extractFirstData(xmlData)
-	return
+	return xmlData
 }
 
 func extractData (data []byte) []entity.Covid19InfoEntity {
@@ -92,3 +91,10 @@ func extractFirstData (data []byte) entity.Covid19InfoEntity {
 	return extractData(data)[0]
 }
 
+func MakeMockCovid19Data() entity.Covid19InfoEntity {
+	data := entity.Covid19InfoEntity {
+		DecideCnt: 1,
+		DeathCnt: 1,
+	}
+	return data
+}

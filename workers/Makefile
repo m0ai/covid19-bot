@@ -13,3 +13,6 @@ deploy: clean build
 gomodgen:
 	chmod u+x gomod.sh
 	./gomod.sh
+
+watch:
+	reflex -r '\.go' -s -- sh -c "go run ./main.go"
