@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"scrapper/internal/entity"
 	"time"
 )
@@ -23,6 +24,13 @@ func Scrape(openAPIKey string, startDt, endDt time.Time) []entity.Covid19InfoEnt
 	return extractedCovid19Data
 }
 
+func ReadFromXML(XMLPath string) []entity.Covid19InfoEntity {
+	xmlFile, _ := os.Open(XMLPath)
+	defer xmlFile.Close()
+	byteData, _ := ioutil.ReadAll(xmlFile)
+	extractedCovid19Data := extractData(byteData)
+	return extractedCovid19Data
+}
 
 func requestTo(baseUrl string, params map[string]string) ([]byte, error) {
 	i := 0
