@@ -67,7 +67,6 @@ func getTodayDecideCnt(db *gorm.DB) int {
 	var yesterdayEntity entity.Covid19InfoEntity
 	db.Order("state_dt desc").First(&todayEntity, "state_dt <= ?", today)
 	db.Order("state_dt desc").First(&yesterdayEntity, "state_dt <= ?", yesterday)
-
 	return todayEntity.DecideCnt - yesterdayEntity.DecideCnt
 }
 
@@ -85,7 +84,7 @@ func AlarmToSlack(msg string) {
 func buildMessage(msg string) (slackMsg slack.MessageAttachmentsFormat) {
 	slackMsg = slack.MessageAttachmentsFormat{
 		Color: "#36a64f",
-		Text:  fmt.Sprint("오늘까지의 누적 확진자 수는 ", msg, "명 입니다. :sob:"),
+		Text:  fmt.Sprint("신규 확진자 수는 ", msg, "명 입니다. :sob:"),
 	}
 	return
 }
