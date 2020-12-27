@@ -1,0 +1,4 @@
+.env
+.git*
+serverless.yml
+docs/*
