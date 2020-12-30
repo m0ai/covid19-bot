@@ -22,15 +22,15 @@ type stateTime struct {
 type Covid19InfoEntity struct {
 	gorm.Model
 	XMLName   xml.Name `xml:"item" json:"Item" gorm:"-"`
-	Seq       int `xml:"seq" gorm:"primaryKey; uniqueIndex; not null"`
-	DecideCnt int `xml:"decideCnt"` // 누적 확진자 수
-	DeathCnt  int `xml:"deathCnt"` // 사망자 수
-	CareCnt   int `xml:"careCnt"` // 치료중 환자 수
-	ClearCnt  int `xml:"clearCnt"` // 격리 해제 수
+	Seq       int      `xml:"seq" gorm:"primaryKey; uniqueIndex; not null"`
+	DecideCnt int      `xml:"decideCnt"` // 누적 확진자 수
+	DeathCnt  int      `xml:"deathCnt"`  // 사망자 수
+	CareCnt   int      `xml:"careCnt"`   // 치료중 환자 수
+	ClearCnt  int      `xml:"clearCnt"`  // 격리 해제 수
 
-	CreateDt  timeAsKST `xml:"createDt" gorm:"type:timestamp"`  // 2020-12-22 09:35:08.23
-	StateDt   stateDt `xml:"stateDt" gorm:"type:date"` // 2020-12-22
-	StateTime stateTime `xml:"stateTime" gorm:"type:time"` // 00:00
+	CreateDt  timeAsKST `xml:"createDt" gorm:"type:timestamp"` // 2020-12-22 09:35:08.23
+	StateDt   stateDt   `xml:"stateDt" gorm:"type:date"`       // 2020-12-22
+	StateTime stateTime `xml:"stateTime" gorm:"type:time"`     // 00:00
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

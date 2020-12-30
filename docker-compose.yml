@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   slackbot:
-    build: .
+    build: workers
     command: go run /build/main.go
     working_dir: /build
     volumes:

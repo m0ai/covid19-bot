@@ -7,7 +7,7 @@ WORKDIR /build
 COPY go.mod .
 COPY go.sum .
 RUN go mod download
-COPY . .
+COPY workers .
 RUN go build -a -ldflags '-s' -o main main.go
 
 FROM scratch

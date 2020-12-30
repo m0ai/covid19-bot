@@ -1,19 +1,19 @@
 package scrapper
 
 import (
+	"covid-19-alert-to-slack/internal/entity"
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	"scrapper/internal/entity"
 	"time"
 )
 
 type Response struct {
-	XMLName xml.Name 				 `xml:"response"`
-	Items []entity.Covid19InfoEntity `xml:"body>items>item"`
+	XMLName xml.Name                   `xml:"response"`
+	Items   []entity.Covid19InfoEntity `xml:"body>items>item"`
 }
 
 // Scrapping Covid-19 Information from OPEN API
@@ -82,7 +82,7 @@ func getCovidDataFromAPI(openAPIKey string, startDate, endDate time.Time) []byte
 	return xmlData
 }
 
-func extractData (data []byte) []entity.Covid19InfoEntity {
+func extractData(data []byte) []entity.Covid19InfoEntity {
 	var res Response
 	xmlReadErr := xml.Unmarshal(data, &res)
 	if xmlReadErr != nil {
@@ -95,15 +95,15 @@ func extractData (data []byte) []entity.Covid19InfoEntity {
 	return res.Items
 }
 
-func extractFirstData (data []byte) entity.Covid19InfoEntity {
+func extractFirstData(data []byte) entity.Covid19InfoEntity {
 	return extractData(data)[0]
 }
 
 func MakeMockCovid19Data() []entity.Covid19InfoEntity {
-	data := entity.Covid19InfoEntity {
-		Seq: 33,
+	data := entity.Covid19InfoEntity{
+		Seq:       33,
 		DecideCnt: 1,
-		DeathCnt: 1,
+		DeathCnt:  1,
 	}
 
 	return []entity.Covid19InfoEntity{data}
