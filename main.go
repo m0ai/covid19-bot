@@ -1,9 +1,6 @@
 package main
 
 import (
-	"covid-19-alert-to-slack/internal/entity"
-	scrape "covid-19-alert-to-slack/pkg/scrapper"
-	slack "covid-19-alert-to-slack/pkg/slack"
 	"fmt"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
@@ -11,6 +8,9 @@ import (
 	"gorm.io/gorm/clause"
 	"log"
 	"os"
+	entity "scrapper/internal/entity"
+	scrape "scrapper/pkg/scrapper"
+	slack "scrapper/pkg/slack"
 	"strconv"
 	"time"
 )
