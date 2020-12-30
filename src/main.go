@@ -75,13 +75,13 @@ func upsertToDB(db *gorm.DB, covid19infoArr []entity.Covid19InfoEntity) {
 }
 
 func AlarmToSlack(msg string) {
-	builtMessage := buildMessage(msg)
+	builtMessage := buildSlackMessage(msg)
 	slackWebhookUrl := os.Getenv("SLACK_WEBHOOK_URL")
 	_ = slack.SendSlackMessage(slackWebhookUrl, "bot-test", "오늘의 코로나 알림 :mask:", []slack.MessageAttachmentsFormat{builtMessage})
 }
 
 // Building Message for send to slack
-func buildMessage(msg string) (slackMsg slack.MessageAttachmentsFormat) {
+func buildSlackMessage(msg string) (slackMsg slack.MessageAttachmentsFormat) {
 	slackMsg = slack.MessageAttachmentsFormat{
 		Color: "#36a64f",
 		Text:  fmt.Sprint("신규 확진자 수는 ", msg, "명 입니다. :sob:"),
