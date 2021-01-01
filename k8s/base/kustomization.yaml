@@ -1,0 +1,11 @@
+secretGenerator:
+  - name: postgress-pass
+  files:
+    - secret.txt
+namespace: covid19-app-namespace
+namePrefix: dev-
+commonLabels:
+  app: covid19-app
+resources:
+  - deployment.yaml
+  - service.yaml
