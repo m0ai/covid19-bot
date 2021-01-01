@@ -1,23 +1,9 @@
 apiVersion: v1
-kind: Service
-metadata:
-  name: covid19-mysql
-  labels:
-    app: wordpress
-spec:
-  ports:
-    - port: 3306
-  selector:
-    app: wordpress
-    tier: mysql
-  clusterIP: None
----
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mysql-pv-claim
+  name: postgres-pv-claim
   labels:
-    app: wordpress
+    app: slack-app
 spec:
   accessModes:
     - ReadWriteOnce
@@ -28,38 +14,35 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wordpress-mysql
+  name: slack-app-postgres
   labels:
-    app: wordpress
+    app: slack-app
 spec:
   selector:
     matchLabels:
-      app: wordpress
-      tier: mysql
+      app: slack-app
+      tier: postgres
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: wordpress
-        tier: mysql
+        app: slack-app
+        tier: postgres
     spec:
       containers:
-      - image: mysql:5.6
-        name: mysql
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-pass
-              key: password
+      - image: postgres
+        name: postgres
+        envFrom:
+        - secretRef:
+            name: postgres-secrets
         ports:
         - containerPort: 3306
-          name: mysql
+          name: postgres
         volumeMounts:
-        - name: mysql-persistent-storage
-          mountPath: /var/lib/mysql
+        - name: postgres-persistent-storage
+          mountPath: /var/lib/postgresql/data
       volumes:
-      - name: mysql-persistent-storage
+      - name: postgres-persistent-storage
         persistentVolumeClaim:
-          claimName: mysql-pv-claim
+          claimName: postgres-pv-claim

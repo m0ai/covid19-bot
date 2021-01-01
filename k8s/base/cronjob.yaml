@@ -1,0 +1,22 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: crawler
+  labels:
+    app: slack-app
+    tier: crawler
+spec:
+  # schedule: "0 10 * * *"
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: daily-decide-count-collect
+            image: busybox
+            args:
+            - /bin/sh
+            - -c
+            - date; echo "Okay, Okay I'm Good"
+          restartPolicy: OnFailure

@@ -1,0 +1,5 @@
+namePrefix: prod-
+resources:
+  - ../base
+  - cronjob.yaml
+
