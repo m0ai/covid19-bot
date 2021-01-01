@@ -6,9 +6,8 @@ metadata:
     app: slack-app
 spec:
   ports:
-    - port: 3306
+    - port: 5432
   selector:
     app: slack-app
     tier: postgres
   clusterIP: None
----

@@ -37,7 +37,7 @@ spec:
         - secretRef:
             name: postgres-secrets
         ports:
-        - containerPort: 3306
+        - containerPort: 5432
           name: postgres
         volumeMounts:
         - name: postgres-persistent-storage
