@@ -5,7 +5,7 @@ resources:
   - cronjob.yaml
 
 secretGenerator:
-  - name: postgress-secrets
+  - name: postgres-secrets
     files:
       - env.postgres.txt
 namespace: covid19-app-namespace
