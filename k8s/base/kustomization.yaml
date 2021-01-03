@@ -6,7 +6,8 @@ resources:
 
 secretGenerator:
   - name: postgres-secrets
-    files:
+    behavior: create
+    envs:
       - env.postgres.txt
 namespace: covid19-app-namespace
 commonLabels:
