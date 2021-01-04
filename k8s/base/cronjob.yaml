@@ -6,8 +6,7 @@ metadata:
     app: slack-app
     tier: crawler
 spec:
-  # schedule: "0 10 * * *"
-  schedule: "*/1 * * * *"
+  schedule: "0 10 * * *"
   jobTemplate:
     spec:
       template:
