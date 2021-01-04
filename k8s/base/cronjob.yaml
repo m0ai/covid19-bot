@@ -15,4 +15,12 @@ spec:
           containers:
           - name: daily-decide-count-collect
             image: m0ai/covid19-bot
+            env:
+              - name: POSTGRES_HOST
+                value: slack-app-postgres
+            envFrom:
+              - secretRef:
+                  name: postgres-secrets
+              - secretRef:
+                  name: common-secrets
           restartPolicy: OnFailure
