@@ -31,5 +31,5 @@ docker-build:
 docker-push: docker-build
 	docker push m0ai/covid19-bot:latest
 
-deploy-dev:
+deploy-dev: docker-build
 	kustomize build k8s/dev | kubectl apply -f -
