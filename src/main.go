@@ -46,12 +46,14 @@ func dbInitConfig() *gorm.DB {
 
 func main() {
 	fmt.Println("Start")
-	_ = initConfig()
+	// _ = initConfig()
 	db := dbInitConfig()
 
 	startDt := time.Now().AddDate(0, 0, -3) // yesterday
 	endDt := time.Now()
 	covid19InfoArr := scrape.Scrape(os.Getenv("OPEN_API_KEY"), startDt, endDt)
+
+	fmt.Println(covid19InfoArr)
 
 	AlarmToSlack(strconv.Itoa(getTodayDecideCnt(db)))
 	upsertToDB(db, covid19InfoArr)
