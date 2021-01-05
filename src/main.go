@@ -55,8 +55,9 @@ func main() {
 
 	fmt.Println(covid19InfoArr)
 
-	AlarmToSlack(strconv.Itoa(getTodayDecideCnt(db)))
 	upsertToDB(db, covid19InfoArr)
+
+	AlarmToSlack(strconv.Itoa(getTodayDecideCnt(db)))
 	fmt.Println("End")
 }
 
