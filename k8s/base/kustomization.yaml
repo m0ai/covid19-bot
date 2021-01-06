@@ -1,0 +1,18 @@
+resources:
+  - namespace.yaml
+  - deployment.yaml
+  - service.yaml
+  - cronjob.yaml
+
+secretGenerator:
+  - name: postgres-secrets
+    behavior: create
+    envs:
+      - env.postgres.txt
+  - name: common-secrets
+    behavior: create
+    envs:
+      - env.common.txt
+namespace: covid19-app-namespace
+commonLabels:
+  app: covid19-app

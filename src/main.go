@@ -46,15 +46,18 @@ func dbInitConfig() *gorm.DB {
 
 func main() {
 	fmt.Println("Start")
-	_ = initConfig()
+	// _ = initConfig()
 	db := dbInitConfig()
 
 	startDt := time.Now().AddDate(0, 0, -3) // yesterday
 	endDt := time.Now()
 	covid19InfoArr := scrape.Scrape(os.Getenv("OPEN_API_KEY"), startDt, endDt)
 
-	AlarmToSlack(strconv.Itoa(getTodayDecideCnt(db)))
+	fmt.Println(covid19InfoArr)
+
 	upsertToDB(db, covid19InfoArr)
+
+	AlarmToSlack(strconv.Itoa(getTodayDecideCnt(db)))
 	fmt.Println("End")
 }
 
@@ -75,13 +78,13 @@ func upsertToDB(db *gorm.DB, covid19infoArr []entity.Covid19InfoEntity) {
 }
 
 func AlarmToSlack(msg string) {
-	builtMessage := buildMessage(msg)
+	builtMessage := buildSlackMessage(msg)
 	slackWebhookUrl := os.Getenv("SLACK_WEBHOOK_URL")
 	_ = slack.SendSlackMessage(slackWebhookUrl, "bot-test", "오늘의 코로나 알림 :mask:", []slack.MessageAttachmentsFormat{builtMessage})
 }
 
 // Building Message for send to slack
-func buildMessage(msg string) (slackMsg slack.MessageAttachmentsFormat) {
+func buildSlackMessage(msg string) (slackMsg slack.MessageAttachmentsFormat) {
 	slackMsg = slack.MessageAttachmentsFormat{
 		Color: "#36a64f",
 		Text:  fmt.Sprint("신규 확진자 수는 ", msg, "명 입니다. :sob:"),

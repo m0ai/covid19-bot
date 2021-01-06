@@ -1,17 +1,20 @@
-.PHONY: build clean deploy gomodgen
+.PHONY: build
+
+K8S_ROOT_DIR:=$(PWD)/k8s
 
 build:
-	export GO111MODULE=on
-	env GOOS=linux go build -ldflags="-s -w" -o bin/scrapper scrapper/main.go
+	@cd src \
+	&& env GO111MODULE=auto GOOS=linux go build -ldflags="-s -w" -o $(PWD)/main main.go
 
 clean:
-	rm -rf ./bin ./vendor go.sum
+	kubectl delete namespace/covid19-app-namespace
 
 deploy: clean build
 	sls deploy --verbose
 
 watch:
-	reflex -r '\.go' -s -- sh -c "go run ./main.go"
+	@cd src \
+	&& reflex -r '\.go' -s -- sh -c "go run ./main.go"
 
 up:
 	docker-compose up -d
@@ -21,3 +24,12 @@ down:
 
 logs:
 	docker-compose logs -f
+
+docker-build:
+	docker build . -t m0ai/covid19-bot
+
+docker-push: docker-build
+	docker push m0ai/covid19-bot:latest
+
+deploy-dev: docker-build
+	kustomize build k8s/dev | kubectl apply -f -

@@ -1,13 +1,13 @@
 package scrapper
 
 import (
-	"covid-19-alert-to-slack/internal/entity"
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	entity "scrapper/internal/entity"
 	"time"
 )
 
