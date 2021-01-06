@@ -2,9 +2,15 @@
 
 K8S_ROOT_DIR:=$(PWD)/k8s
 
-build:
+build: build-scrapper build-notify
+
+build-scrapper:
 	@cd src \
-	&& env GO111MODULE=auto GOOS=linux go build -ldflags="-s -w" -o $(PWD)/main main.go
+	&& env GO111MODULE=auto go build -ldflags="-s -w" -o $(PWD)/scrapper scrapper.go
+
+build-notify:
+	@cd src \
+	&& env GO111MODULE=auto go build -ldflags="-s -w" -o $(PWD)/main main.go
 
 clean:
 	kubectl delete namespace/covid19-app-namespace
