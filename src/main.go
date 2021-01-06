@@ -12,10 +12,10 @@ import (
 )
 
 func main() {
-	fmt.Println("Start")
+	fmt.Println("Notify Start")
 	db := dbcontext.DbInitConfig()
 	AlarmToSlack(strconv.Itoa(getTodayDecideCnt(db)))
-	fmt.Println("End")
+	fmt.Println("Notify End")
 }
 
 // getTodayDecideCnt
