@@ -1,31 +1,35 @@
 package covid19info
 
-import "log"
+import (
+	"context"
+	"gorm.io/gorm/clause"
+	entity "scrapper/internal/entity"
+	"scrapper/pkg/dbcontext"
+	"time"
+)
 
 type Repository interface {
-	// Get returns the album with the specified album ID.
-	/*
-		Get(ctx context.Context, id string) (entity.Album, error)
-		// Count returns the number of albums.
-		Count(ctx context.Context) (int, error)
-		// Query returns the list of albums with the given offset and limit.
-		Query(ctx context.Context, offset, limit int) ([]entity.Album, error)
-		// Create saves a new album in the storage.
-		Create(ctx context.Context, album entity.Album) error
-		// Update updates the album with given ID in the storage.
-		Update(ctx context.Context, album entity.Album) error
-		// Delete removes the album with given ID from the storage.
-		Delete(ctx context.Context, id string) error
-	*/
+	Get(ctx context.Context, stateDt time.Time) (entity.Covid19InfoEntity, error)
+	UpdateOrCreate(ctx context.Context, covid19infoArr entity.Covid19InfoEntity) error
 }
 
-// repository persists albums in database
+// repository persists covid19info in database
 type repository struct {
-	db     *dbcontext.DB
-	logger log.Logger
+	db *dbcontext.DB
 }
 
-// NewRepository creates a new album repository
-func NewRepository(db *dbcontext.DB, logger log.Logger) Repository {
-	return repository{db, logger}
+// NewRepository creates a new covid19info repository
+func NewRepository(db *dbcontext.DB) Repository {
+	return repository{db: db}
+}
+
+func (r repository) Get(ctx context.Context, stateDt time.Time) (entity.Covid19InfoEntity, error) {
+	var obj entity.Covid19InfoEntity
+	r.db.With(ctx).First(&obj, "state_dt <= ?", stateDt).Order("state_dt desc")
+	return obj, nil
+}
+
+func (r repository) UpdateOrCreate(ctx context.Context, covid19infoArr entity.Covid19InfoEntity) error {
+	r.db.With(ctx).Clauses(clause.OnConflict{DoNothing: true}).Create(&covid19infoArr)
+	return nil
 }
