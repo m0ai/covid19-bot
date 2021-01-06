@@ -10,10 +10,10 @@ COPY src/go.mod src/go.sum /build/
 RUN go mod download
 COPY src/ .
 RUN go build -a -ldflags '-s' -o main main.go
-
+RUN go build -a -ldflags '-s' -o scrapper scrapper.go
 FROM scratch
 WORKDIR /dist
 COPY --from=builder /usr/local/go/lib/time/zoneinfo.zip /usr/local/go/lib/time/zoneinfo.zip
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /build/main /dist
+COPY --from=builder /build/main /build/scrapper /dist/
 CMD ["/dist/main"]
