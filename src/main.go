@@ -39,8 +39,9 @@ func AlarmToSlack(msg string) {
 // Building Message for send to slack
 func buildSlackMessage(msg string) (slackMsg slack.MessageAttachmentsFormat) {
 	slackMsg = slack.MessageAttachmentsFormat{
-		Color: "#36a64f",
-		Text:  fmt.Sprint("금일 신규 확진자 수는 ", msg, "명 입니다. :sob:"),
+		Color:  "#36a64f",
+		Text:   fmt.Sprint("금일 신규 확진자 수는 ", msg, "명 입니다. :sob:"),
+		Footer: "Data From Open API",
 	}
 	return
 }

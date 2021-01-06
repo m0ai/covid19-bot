@@ -10,21 +10,22 @@ import (
 )
 
 type MessageAttachmentsFormat struct {
-	Color string `json:"color"`
+	Color   string `json:"color"`
 	Pretext string `json:"prefix"`
-	Text string `json:"text"`
+	Text    string `json:"text"`
+	Footer  string `json:"footer"`
 }
 
 type MessageBody struct {
-	Channel  string                        `json:"channel"`
-	Text 	 string                        `json:"text"`
+	Channel     string                     `json:"channel"`
+	Text        string                     `json:"text"`
 	Attachments []MessageAttachmentsFormat `json:"attachments"`
 }
 
 func SendSlackMessage(webhookUrl, channel, message string, attachments []MessageAttachmentsFormat) error {
 	messageBody := MessageBody{
-		Channel: channel,
-		Text:    message,
+		Channel:     channel,
+		Text:        message,
 		Attachments: attachments,
 	}
 	jsonMessage, err := json.Marshal(messageBody)
@@ -35,7 +36,7 @@ func SendSlackMessage(webhookUrl, channel, message string, attachments []Message
 	}
 	buffer := bytes.NewBuffer(jsonMessage)
 	resp, err := http.Post(webhookUrl, "application/json", buffer)
-	if err != nil{
+	if err != nil {
 		log.Fatalln("Oh.. failure a send slack message :(", err, webhookUrl)
 	}
 	defer resp.Body.Close()
@@ -47,4 +48,3 @@ func SendSlackMessage(webhookUrl, channel, message string, attachments []Message
 
 	return nil
 }
-
