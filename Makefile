@@ -15,9 +15,6 @@ build-notify:
 clean:
 	kubectl delete namespace/covid19-app-namespace
 
-deploy: clean build
-	sls deploy --verbose
-
 watch:
 	@cd src \
 	&& reflex -r '\.go' -s -- sh -c "go run ./main.go"
