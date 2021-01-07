@@ -9,11 +9,20 @@ import (
 	"net/http"
 )
 
+type InnerField struct {
+	Title string `json:"title"`
+	Value string `json:"value"`
+	Short bool   `json:"short"`
+}
+
 type MessageAttachmentsFormat struct {
-	Color   string `json:"color"`
-	Pretext string `json:"prefix"`
-	Text    string `json:"text"`
-	Footer  string `json:"footer"`
+	Color      string       `json:"color"`
+	Title      string       `json:"title"`
+	TitleLink  string       `json:"title_link"`
+	Footer     string       `json:"footer"`
+	FooterLink string       `json:"footer_link"`
+	Ts         int64        `json:"ts"`
+	Fields     []InnerField `json:"fields"`
 }
 
 type MessageBody struct {

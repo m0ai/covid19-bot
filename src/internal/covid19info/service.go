@@ -2,7 +2,7 @@ package covid19info
 
 import (
 	"context"
-	"covid-19-alert-to-slack/internal/entity"
+	entity "covid-19-alert-to-slack/internal/entity"
 	"log"
 )
 
