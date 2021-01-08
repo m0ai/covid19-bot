@@ -33,7 +33,7 @@ func getCovid19infoEntityFilterByStateDt(dt time.Time) (entity.Covid19InfoEntity
 }
 
 func AlarmToSlack(channel string, attachmentMessages []slack.MessageAttachmentsFormat, slackWebhookUrl string) {
-	_ = slack.SendSlackMessage(slackWebhookUrl, "bot-test", "오늘의 코로나 알림 :mask:", attachmentMessages)
+	_ = slack.SendSlackMessage(slackWebhookUrl, channel, "오늘의 코로나 알림 :mask:", attachmentMessages)
 }
 
 // Building Message for send to slack
