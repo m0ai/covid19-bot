@@ -13,7 +13,7 @@ spec:
         spec:
           containers:
           - name: scrapping-covid19info-from-openapi
-            image: m0ai/covid19-bot:latset
+            image: m0ai/covid19-bot:latest
             command:
               - "/dist/scrapper"
             env:
@@ -41,7 +41,7 @@ spec:
         spec:
           containers:
             - name: notify-to-slack
-              image: m0ai/covid19-bot:latset
+              image: m0ai/covid19-bot:latest
               command:
                 - "/dist/main"
               env:
