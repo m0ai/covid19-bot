@@ -1,20 +1,39 @@
 version: "3.9"
 
 services:
-  slackbot:
-    build: workers
-    command: go run /build/main.go
+  base:
+    build:
+      context: .
+      target: builder
     working_dir: /build
     volumes:
-      - ./:/build
+      - ./src:/build
+
+  # Each Service
+  scrapper:
+    extends:
+      service: base
+    command: go run /build/main.go
+    env_file:
+      - k8s/base/env.postgres.txt
+      - k8s/base/env.common.txt
+    links:
+      - postgres
+  notify:
+    extends:
+      service: base
+    command: go run /build/scrapper.go
+    env_file:
+      - k8s/base/env.postgres.txt
     links:
       - postgres
 
+  # DB
   postgres:
-    image: postgres
+    image: postgres:latest
     restart: always
     env_file:
-      - .env
+      - k8s/base/env.postgres.txt
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
@@ -22,4 +41,3 @@ services:
 volumes:
   db-data:
     driver: local
-
