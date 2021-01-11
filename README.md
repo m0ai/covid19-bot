@@ -1,29 +1,34 @@
-- Worker 
-	- [X] Scraping a Covid 19 Information from Korean Open API
-	- [ ] Save a Data to Database 
+# covid19-bot
+
+- Scrapper  
+	- [X] Scraping a Covid 19 Information from Covid19 Open API
+	- [x] Save a Data to Database 
 	    - Daily number of confirmed case
 	    - Update Datetime
+- Slack Bot (cronjob)
+  - [x] today's decide count to notify slack channel
 - REST API
-- Slack Bot (client)
 
-```
-1. 매일 슬랙봇으로 코로나 확진자 수
-
-A. 슬랙봇 템플릿
-1. 당일 코로나 확진자 수 조회
-2. 해당 데이터 슬랙으로 보내기
+  - [ ] interface for interactive slack bot 
 
 
-B. 슬랙봇으로 조회
-1. 코로나 확진자 수 슬랙 커맨드 제공
-  1. 데이터베이스 구축
 
-C. 슬랙봇 시각화
-1. 코로나 지표 그림으로 슬랙으로 보내기
-```
-
-## How to Start 
+## How to Debug 
 
 ```bash
-reflex -r '\.go' -s -- sh -c "go run main.go" 
+# Slack Notify App
+reflex -r '\.go' -s -- sh -c "go run src/main.go" 
+
+# Scrapper App
+reflex -r '\.go' -s -- sh -c "go run src/scrapper.go" 
 ```
+
+
+
+
+## How to Deploy
+
+```bash
+make deploy-[dev|pord]
+```
+
