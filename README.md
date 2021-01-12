@@ -12,23 +12,24 @@
   - [ ] interface for interactive slack bot 
 
 
-
 ## How to Debug 
 
 ```bash
+# Frist, Start a Database
+make db
+
 # Slack Notify App
-reflex -r '\.go' -s -- sh -c "go run src/main.go" 
+make watch-notify
 
-# Scrapper App
-reflex -r '\.go' -s -- sh -c "go run src/scrapper.go" 
+# or Scrapper App
+make watch-scrapper
 ```
-
-
-
 
 ## How to Deploy
 
 ```bash
+make docker-build
+make docker-push
 make deploy-[dev|pord]
 ```
 
