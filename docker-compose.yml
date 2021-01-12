@@ -15,8 +15,8 @@ services:
       service: base
     command: go run /build/main.go
     env_file:
-      - k8s/base/env.postgres.txt
-      - k8s/base/env.common.txt
+      - k8s/base/secrets/env.postgres.txt
+      - k8s/base/secrets/env.common.txt
     links:
       - postgres
   notify:
@@ -24,7 +24,7 @@ services:
       service: base
     command: go run /build/scrapper.go
     env_file:
-      - k8s/base/env.postgres.txt
+      - k8s/base/secrets/env.postgres.txt
     links:
       - postgres
 
@@ -33,7 +33,7 @@ services:
     image: postgres:latest
     restart: always
     env_file:
-      - k8s/base/env.postgres.txt
+      - k8s/base/secrets/env.postgres.txt
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:

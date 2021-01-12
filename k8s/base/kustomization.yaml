@@ -8,11 +8,11 @@ secretGenerator:
   - name: postgres-secrets
     behavior: create
     envs:
-      - env.postgres.txt
+      - secrets/env.postgres.txt
   - name: common-secrets
     behavior: create
     envs:
-      - env.common.txt
+      - secrets/env.common.txt
 namespace: covid19-app-namespace
 commonLabels:
   app: covid19-app
