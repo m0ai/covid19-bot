@@ -23,9 +23,6 @@ reflex -r '\.go' -s -- sh -c "go run src/main.go"
 reflex -r '\.go' -s -- sh -c "go run src/scrapper.go" 
 ```
 
-
-
-
 ## How to Deploy
 
 ```bash
