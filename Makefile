@@ -1,26 +1,34 @@
-.PHONY: build
+.PHONY: clean
 
 K8S_ROOT_DIR:=$(PWD)/k8s
+
+GOOS := drawin
+GOARCH := amd64
+GO111MODULE := auto
 
 build: build-scrapper build-notify
 
 build-scrapper:
-	@cd src \
-	&& env GO111MODULE=auto go build -ldflags="-s -w" -o $(PWD)/scrapper scrapper.go
+	go build -ldflags="-s -w" -o $(PWD)/scrapper scrapper.go
 
 build-notify:
-	@cd src \
-	&& env GO111MODULE=auto go build -ldflags="-s -w" -o $(PWD)/main main.go
+	go build -ldflags="-s -w" -o $(PWD)/main main.go
+
+watch-scrapper:
+	docker-compose run scrapper reflex -r '\.go' -s -- sh -c "go run ./scrapper.go"
+
+watch-notify:
+	docker-compose run scrapper reflex -r '\.go' -s -- sh -c "go run ./main.go"
 
 clean:
 	kubectl delete namespace/covid19-app-namespace
 
-watch:
-	@cd src \
-	&& reflex -r '\.go' -s -- sh -c "go run ./main.go"
-
+# Commons
 up:
-	docker-compose up -d
+	docker-compose up -d --build
+
+db:
+	docker-compose up -d --build postgres
 
 down:
 	docker-compose down
@@ -28,6 +36,7 @@ down:
 logs:
 	docker-compose logs -f
 
+# Related to Docker
 docker-build:
 	docker build . -t m0ai/covid19-bot
 
