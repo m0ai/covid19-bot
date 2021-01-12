@@ -18,10 +18,7 @@ watch-scrapper:
 	docker-compose run scrapper reflex -r '\.go' -s -- sh -c "go run ./scrapper.go"
 
 watch-notify:
-	docker-compose run scrapper reflex -r '\.go' -s -- sh -c "go run ./main.go"
-
-clean:
-	kubectl delete namespace/covid19-app-namespace
+	docker-compose run notify reflex -r '\.go' -s -- sh -c "go run ./main.go"
 
 # Commons
 up:
@@ -45,3 +42,6 @@ docker-push: docker-build
 
 deploy-dev: docker-build
 	kustomize build k8s/dev | kubectl apply -f -
+
+clean:
+	kubectl delete namespace/covid19-app-namespace
