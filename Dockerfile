@@ -6,6 +6,7 @@ ENV GO11MODULE=on \
 RUN apk --no-cache add ca-certificates tzdata
 WORKDIR /build
 COPY src/go.mod src/go.sum /build/
+RUN go get github.com/cespare/reflex # For Debug
 RUN go mod download
 COPY src/ .
 # If build is slow, separate  a builder each binary
