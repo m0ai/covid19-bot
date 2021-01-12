@@ -14,7 +14,7 @@ import (
 func main() {
 	fmt.Println("Scrapper Start")
 	db := dbcontext.DbInitConfig()
-	startDt := time.Now().AddDate(0, 0, -3) // yesterday
+	startDt := time.Now().AddDate(0, 0, -3) // three days ago
 	endDt := time.Now()
 	covid19InfoArr := scrape.Scrape(os.Getenv("OPEN_API_KEY"), startDt, endDt)
 	upsertToDB(db, covid19InfoArr)
