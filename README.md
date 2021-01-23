@@ -1,5 +1,9 @@
 # covid19-bot
 
+![example_screenshot](./docs/img/example.png)
+
+## Feature
+
 - Scrapper  
 	- [X] Scraping a Covid 19 Information from Covid19 Open API
 	- [x] Save a Data to Database 
@@ -8,7 +12,6 @@
 - Slack Bot (cronjob)
   - [x] today's decide count to notify slack channel
 - REST API
-
   - [ ] interface for interactive slack bot 
 
 
@@ -32,4 +35,6 @@ make docker-build
 make docker-push
 make deploy-[dev|pord]
 ```
+
+
 
